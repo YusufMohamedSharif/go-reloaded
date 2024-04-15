@@ -129,7 +129,7 @@ func ChangeA(s []string) []string {
 
 	for i, word := range s {
 		for _, letter := range vowels {
-			if word == "a" && string(s[i+1][0]) == letter {
+			if i+1 < len(s) && len(s[i+1]) > 0 && word == "a" && string(s[i+1][0]) == letter {
 				s[i] = "an"
 			} else if word == "A" && string(s[i+1][0]) == letter {
 				s[i] = "An"
@@ -144,7 +144,7 @@ func Punctuations(s []string) []string {
 	// punc in the middle of a string connecting to word after
 	for i, word := range s {
 		for _, punc := range puncs {
-			if string(word[0]) == punc && string(word[len(word)-1]) != punc {
+			if len(word) > 0 && i != 0 && string(word[0]) == punc && string(word[len(word)-1]) != punc {
 				s[i-1] += punc
 				s[i] = word[1:]
 			}
@@ -154,7 +154,7 @@ func Punctuations(s []string) []string {
 	// punc at end of string
 	for i, word := range s {
 		for _, punc := range puncs {
-			if (string(word[0]) == punc) && (s[len(s)-1] == s[i]) {
+			if len(word) > 0 && i < len(s) && (string(word[0]) == punc) && (s[len(s)-1] == s[i]) {
 				s[i-1] += word
 				s = s[:len(s)-1]
 			}
@@ -164,7 +164,7 @@ func Punctuations(s []string) []string {
 	// punc in middle of string
 	for i, word := range s {
 		for _, punc := range puncs {
-			if string(word[0]) == punc && string(word[len(word)-1]) == punc && s[i] != s[len(s)-1] {
+			if len(word) > 0 && len(s) > i && i != 0 && string(word[0]) == punc && string(word[len(word)-1]) == punc && s[i] != s[len(s)-1] {
 				s[i-1] += word
 				s = append(s[:i], s[i+1:]...)
 			}
@@ -175,16 +175,21 @@ func Punctuations(s []string) []string {
 	count := 0
 	for i, word := range s {
 		if word == "'" && count == 0 {
-			count += 1
-			s[i+1] = word + s[i+1]
-			s = append(s[:i], s[i+1:]...)
+			if i+1 < len(s) {
+
+				count += 1
+				s[i+1] = word + s[i+1]
+				s = append(s[:i], s[i+1:]...)
+			}
 		}
 	}
 	//  for second apostrophe
 	for i, word := range s {
 		if word == "'" {
-			s[i-1] = s[i-1] + word
-			s = append(s[:i], s[i+1:]...)
+			if i-1 < len(s) {
+				s[i-1] = s[i-1] + word
+				s = append(s[:i], s[i+1:]...)
+			}
 		}
 	}
 	return s

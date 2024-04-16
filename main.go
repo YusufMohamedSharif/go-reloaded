@@ -75,26 +75,32 @@ func main() {
 
 			// upper with number
 		} else if word == "(up," && i != 0 {
-			b := strings.Trim(string(words[i+1]), words[i+1][1:])
+			b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
 			number, _ := strconv.Atoi(string(b))
 			for j := 1; j <= number; j++ {
-				words[i-j] = strings.ToUpper(words[i-j])
+				if i-j >= 0 {
+					words[i-j] = strings.ToUpper(words[i-j])
+				}
 			}
 			words = append(words[:i], words[i+2:]...)
 			// lower with number
 		} else if word == "(low," && i != 0 {
-			b := strings.Trim(string(words[i+1]), words[i+1][1:])
+			b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
 			number, _ := strconv.Atoi(string(b))
 			for j := 1; j <= number; j++ {
-				words[i-j] = strings.ToLower(words[i-j])
+				if i-j >= 0 {
+					words[i-j] = strings.ToLower(words[i-j])
+				}
 			}
 			words = append(words[:i], words[i+2:]...)
 			// capitalize with num
 		} else if word == "(cap," && i != 0 {
-			b := strings.Trim(string(words[i+1]), words[i+1][1:])
+			b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
 			number, _ := strconv.Atoi(string(b))
 			for j := 1; j <= number; j++ {
-				words[i-j] = strings.Title(words[i-j])
+				if i-j >= 0 {
+					words[i-j] = strings.Title(words[i-j])
+				}
 			}
 			words = append(words[:i], words[i+2:]...)
 		}
@@ -171,26 +177,44 @@ func Punctuations(s []string) []string {
 		}
 	}
 
-	// for apostrophe
 	count := 0
 	for i, word := range s {
-		if word == "'" && count == 0 {
-			if i+1 < len(s) {
+		if word == "'" {
+			if i+1 < len(s) && count%2 == 0 {
 
-				count += 1
 				s[i+1] = word + s[i+1]
 				s = append(s[:i], s[i+1:]...)
-			}
-		}
-	}
-	//  for second apostrophe
-	for i, word := range s {
-		if word == "'" {
-			if i-1 < len(s) && i != 0 {
+
+			} else if i-1 < len(s) && i != 0 && count%2 == 1 {
 				s[i-1] = s[i-1] + word
 				s = append(s[:i], s[i+1:]...)
 			}
+			count += 1
 		}
 	}
+
+	// // for apostrophe
+	// count := true
+	// for i, word := range s {
+	// 	if word == "'" {
+	// 		if i+1 < len(s) {
+	// 			if count {
+	// 				s[i+1] = word + s[i+1]
+	// 				s = append(s[:i], s[i+1:]...)
+	// 			}
+	// 			count = !count
+
+	// 		}
+	// 	}
+	// }
+	//  for second apostrophe
+	// for i, word := range s {
+	// 	if word == "'" {
+	// 		if i-1 < len(s) && i != 0 {
+	// 			s[i-1] = s[i-1] + word
+	// 			s = append(s[:i], s[i+1:]...)
+	// 		}
+	// 	}
+	// }
 	return s
 }

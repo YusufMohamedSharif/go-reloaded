@@ -57,24 +57,24 @@ func main() {
 	// array to push the words into
 	words := strings.Split(string(givenText), " ")
 	for i, word := range words {
-		if word == "(up)" {
+		if word == "(up)" && i != 0 {
 			words[i-1] = strings.ToUpper(words[i-1])
 			words = append(words[:i], words[i+1:]...)
-		} else if word == "(low)" {
+		} else if word == "(low)" && i != 0 {
 			words[i-1] = strings.ToLower(words[i-1])
 			words = append(words[:i], words[i+1:]...)
-		} else if word == "(cap)" {
+		} else if word == "(cap)" && i != 0 {
 			words[i-1] = strings.Title(words[i-1])
 			words = append(words[:i], words[i+1:]...)
-		} else if word == "(hex)" {
+		} else if word == "(hex)" && i != 0 {
 			words[i-1] = HextoInt(words[i-1])
 			words = append(words[:i], words[i+1:]...)
-		} else if word == "(bin)" {
+		} else if word == "(bin)" && i != 0 {
 			words[i-1] = BintoInt(words[i-1])
 			words = append(words[:i], words[i+1:]...)
 
 			// upper with number
-		} else if word == "(up," {
+		} else if word == "(up," && i != 0 {
 			b := strings.Trim(string(words[i+1]), words[i+1][1:])
 			number, _ := strconv.Atoi(string(b))
 			for j := 1; j <= number; j++ {
@@ -82,7 +82,7 @@ func main() {
 			}
 			words = append(words[:i], words[i+2:]...)
 			// lower with number
-		} else if word == "(low," {
+		} else if word == "(low," && i != 0 {
 			b := strings.Trim(string(words[i+1]), words[i+1][1:])
 			number, _ := strconv.Atoi(string(b))
 			for j := 1; j <= number; j++ {
@@ -90,7 +90,7 @@ func main() {
 			}
 			words = append(words[:i], words[i+2:]...)
 			// capitalize with num
-		} else if word == "(cap," {
+		} else if word == "(cap," && i != 0 {
 			b := strings.Trim(string(words[i+1]), words[i+1][1:])
 			number, _ := strconv.Atoi(string(b))
 			for j := 1; j <= number; j++ {
@@ -154,7 +154,7 @@ func Punctuations(s []string) []string {
 	// punc at end of string
 	for i, word := range s {
 		for _, punc := range puncs {
-			if len(word) > 0 && i < len(s) && (string(word[0]) == punc) && (s[len(s)-1] == s[i]) {
+			if len(s) > 1 && i != 0 && len(word) > 0 && i < len(s) && (string(word[0]) == punc) && (s[len(s)-1] == s[i]) {
 				s[i-1] += word
 				s = s[:len(s)-1]
 			}
@@ -186,7 +186,7 @@ func Punctuations(s []string) []string {
 	//  for second apostrophe
 	for i, word := range s {
 		if word == "'" {
-			if i-1 < len(s) {
+			if i-1 < len(s) && i != 0 {
 				s[i-1] = s[i-1] + word
 				s = append(s[:i], s[i+1:]...)
 			}

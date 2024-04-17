@@ -1,5 +1,5 @@
 1: FIXED. just a dot "." so there is no word before any dot. 
-2: if there is a trailing vowel like "a" at the end of the sentence
+2: Can not replicate this error. if there is a trailing vowel like "a" at the end of the sentence
 3: FIXED. just a "'"
 4: FIXED. (cap) alone. there is no words before cap
 5: FIXED. (cap, 30) where only the first number is being taken (30 becomes 3 only)

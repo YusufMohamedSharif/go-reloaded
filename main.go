@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -54,8 +55,11 @@ func main() {
 
 	givenText, _ := os.ReadFile(args[0])
 
+	arrayFormatting := strings.Fields(string(givenText))
+	formattedString := strings.Join(arrayFormatting, " ")
+
 	// array to push the words into
-	words := strings.Split(string(givenText), " ")
+	words := strings.Split(formattedString, " ")
 	for i, word := range words {
 		if word == "(up)" && i != 0 {
 			words[i-1] = strings.ToUpper(words[i-1])
@@ -64,7 +68,9 @@ func main() {
 			words[i-1] = strings.ToLower(words[i-1])
 			words = append(words[:i], words[i+1:]...)
 		} else if word == "(cap)" && i != 0 {
-			words[i-1] = strings.Title(words[i-1])
+			if len(words[i-1]) > 0 {
+				words[i-1] = strings.ToUpper(string(words[i-1][0])) + strings.ToLower(string(words[i-1][1:]))
+			}
 			words = append(words[:i], words[i+1:]...)
 		} else if word == "(hex)" && i != 0 {
 			words[i-1] = HextoInt(words[i-1])
@@ -99,7 +105,7 @@ func main() {
 			number, _ := strconv.Atoi(string(b))
 			for j := 1; j <= number; j++ {
 				if i-j >= 0 {
-					words[i-j] = strings.Title(words[i-j])
+					words[i-j] = strings.ToUpper(string(words[i-j][0])) + strings.ToLower(string(words[i-j][1:]))
 				}
 			}
 			words = append(words[:i], words[i+2:]...)
@@ -186,12 +192,24 @@ func Punctuations(s []string) []string {
 				s = append(s[:i], s[i+1:]...)
 
 			} else if i-1 < len(s) && i != 0 && count%2 == 1 {
-				s[i-1] = s[i-1] + word
+				if i+1 < len(s) {
+					s[i-1] = s[i-1] + word
+					s = append(s[:i], s[i+1:]...)
+				}
+			}
+
+			if i != 0 && i == len(s)-1 && s[len(s)-1] == "'" && s[len(s)-2] != " " {
+				s[len(s)-2] = s[len(s)-2] + s[len(s)-1]
 				s = append(s[:i], s[i+1:]...)
 			}
+
 			count += 1
 		}
 	}
+
+	stuckedQuotes := regexp.MustCompile("('')")
+
+	addedSpace := stuckedQuotes.ReplaceAllString(strings.Join(s, " "), "$1 ")
 
 	// // for apostrophe
 	// count := true
@@ -216,5 +234,5 @@ func Punctuations(s []string) []string {
 	// 		}
 	// 	}
 	// }
-	return s
+	return strings.Fields(addedSpace)
 }

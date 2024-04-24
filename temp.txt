@@ -7,6 +7,7 @@ handle painic
 
 abc abc abc abc ' abc ' abc 'abc ' 'abc' abc . . ...       .    . ! !   ?                 ?!
 abc abc abc abc 'abc' abc 'abc' 'abc' abc.......!!??!
+abc abc abc abc 'abc' abc 'abc' 'abc' abc.......!!!??
 
 handle anything rather than english and numbers and punc.
 

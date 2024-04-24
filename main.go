@@ -190,7 +190,7 @@ func ChangeA(s []string) []string {
 }
 
 func Punctuations(s []string) []string {
-	puncs := []string{",", ".", "!", "?", ":", ";"}
+	/*puncs := []string{",", ".", "!", "?", ":", ";"}
 	// punc in the middle of a string connecting to word after
 	for i, word := range s {
 		for _, punc := range puncs {
@@ -243,16 +243,19 @@ func Punctuations(s []string) []string {
 	*/
 	stuckedQuotes := regexp.MustCompile("('')")
 	// recently added
-	puncRegex := regexp.MustCompile(`\s+([.,!?:;])`)
-	puncGroupRegex := regexp.MustCompile(`([.,!?:;])\s+([.,!?:;])`)
+	// puncRegex := regexp.MustCompile(`\s+([.,!?:;])`)
+	// puncGroupRegex := regexp.MustCompile(`([.,!?:;])\s+([.,!?:;])`)
+	test := regexp.MustCompile(`\s*([.,!?:;])\s+`)
 	// quoteRegex := regexp.MustCompile(`'\s+(.*?)\s+'`)
+
 	singleQuoteRegex := regexp.MustCompile(`'(\s*)(.*?)(\s*)'`)
 	// hexRegex := regexp.MustCompile(`\b([0-9A-Fa-f]+)\s+\(hex\)`)
 	// singleQuotetToTheLeftRegex := regexp.MustCompile(`(')(\s+)(.*?)`)
 	addedSpace := stuckedQuotes.ReplaceAllString(strings.Join(s, " "), "$1 ")
+	addedSpace = test.ReplaceAllString(addedSpace, "$1")
 	// Replace punctuation
-	addedSpace = puncRegex.ReplaceAllString(addedSpace, "$1")
-	addedSpace = puncGroupRegex.ReplaceAllString(addedSpace, "$1$2")
+	// addedSpace = puncRegex.ReplaceAllString(addedSpace, "$1")
+	// addedSpace = puncGroupRegex.ReplaceAllString(addedSpace, "$1$2")
 	// addedSpace = quoteRegex.ReplaceAllString(addedSpace, "'$1'")
 	addedSpace = singleQuoteRegex.ReplaceAllString(addedSpace, " '$2' ")
 	// addedSpace = singleQuotetToTheLeftRegex.ReplaceAllString(addedSpace, "$1")

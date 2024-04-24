@@ -1,3 +1,15 @@
+((((((((((((((((((((((((((((hello (cap)))))))))))))))))))))))))))))
+((((((((((((((((((((((((((((HELLO))))))))))))))))))))))))))))
+
+(cap, 
+(cap)
+handle painic
+
+abc abc abc abc ' abc ' abc 'abc ' 'abc' abc . . ...       .    . ! !   ?                 ?!
+abc abc abc abc 'abc' abc 'abc' 'abc' abc.......!!??!
+
+handle anything rather than english and numbers and punc.
+
 package main
 
 import (
@@ -55,13 +67,6 @@ func main() {
 	// reading first file
 
 	givenText, _ := os.ReadFile(args[0])
-
-	for _, letter := range givenText {
-		if letter > 126 || letter < 32 {
-			fmt.Println("Wrong input!")
-			return
-		}
-	}
 
 	// arrayFormatting := strings.Fields(string(givenText))
 	// formattedString := strings.Join(arrayFormatting, " ")
@@ -248,14 +253,14 @@ func Punctuations(s []string) []string {
 	// quoteRegex := regexp.MustCompile(`'\s+(.*?)\s+'`)
 	singleQuoteRegex := regexp.MustCompile(`'(\s*)(.*?)(\s*)'`)
 	// hexRegex := regexp.MustCompile(`\b([0-9A-Fa-f]+)\s+\(hex\)`)
-	// singleQuotetToTheLeftRegex := regexp.MustCompile(`(')(\s+)(.*?)`)
+	singleQuotetToTheLeftRegex := regexp.MustCompile(`(')(\s*)(.*?)`)
 	addedSpace := stuckedQuotes.ReplaceAllString(strings.Join(s, " "), "$1 ")
 	// Replace punctuation
 	addedSpace = puncRegex.ReplaceAllString(addedSpace, "$1")
 	addedSpace = puncGroupRegex.ReplaceAllString(addedSpace, "$1$2")
 	// addedSpace = quoteRegex.ReplaceAllString(addedSpace, "'$1'")
-	addedSpace = singleQuoteRegex.ReplaceAllString(addedSpace, " '$2' ")
-	// addedSpace = singleQuotetToTheLeftRegex.ReplaceAllString(addedSpace, "$1")
+	addedSpace = singleQuoteRegex.ReplaceAllString(addedSpace, "'$2'")
+	addedSpace = singleQuotetToTheLeftRegex.ReplaceAllString(addedSpace, "'$1'")
 
 	/*addedSpace = hexRegex.ReplaceAllStringFunc(addedSpace, func(s string) string {
 		hexNum := hexRegex.FindStringSubmatch(s)[1]

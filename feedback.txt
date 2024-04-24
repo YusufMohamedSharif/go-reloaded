@@ -5,3 +5,15 @@
 5: FIXED. (cap, 30) where only the first number is being taken (30 becomes 3 only)
 6: FIXED. (cap, X) where X is more than the number of words before the operator
 7: check ' multiple ' and a will give not correct result, or panic
+
+((((((((((((((((((((((((((((hello) (cap))))))))))))))))))))))))))))
+((((((((((((((((((((((((((((HELLO))))))))))))))))))))))))))))
+
+(cap, 
+(cap)
+handle painic
+
+abc abc abc abc ' abc ' abc 'abc ' 'abc' abc . . ...       .    . ! !   ?                 ?!
+abc abc abc abc 'abc' abc 'abc' 'abc' abc.......!!??!
+
+handle anything rather than english and numbers and punc.

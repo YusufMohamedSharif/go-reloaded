@@ -1,3 +1,7 @@
+panic 
+(cap,
+
+
 ((((((((((((((((((((((((((((hello (cap)))))))))))))))))))))))))))))
 ((((((((((((((((((((((((((((HELLO))))))))))))))))))))))))))))
 
@@ -7,10 +11,19 @@ handle painic
 
 abc abc abc abc ' abc ' abc 'abc ' 'abc' abc . . ...       .    . ! !   ?                 ?!
 abc abc abc abc 'abc' abc 'abc' 'abc' abc.......!!??!
-abc abc abc abc 'abc' abc 'abc' 'abc' abc.......!!!??
 
 handle anything rather than english and numbers and punc.
 
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"os"
+	"regexp"
+	"strconv"
+	"strings"
+)
 package main
 
 import (
@@ -69,6 +82,13 @@ func main() {
 
 	givenText, _ := os.ReadFile(args[0])
 
+	for _, letter := range givenText {
+		if letter > 126 || letter < 32 {
+			fmt.Println("Wrong input!")
+			return
+		}
+	}
+
 	// arrayFormatting := strings.Fields(string(givenText))
 	// formattedString := strings.Join(arrayFormatting, " ")
 
@@ -91,7 +111,7 @@ func main() {
 				words[i-1] = strings.ToLower(words[i-1])
 				words = append(words[:i], words[i+1:]...)
 			}
-		} else if word == "(cap)" || word == "(CAP)" || word == "(Cap)" {
+		} else if word == "(cap)" || word == "(CAP)" || word == "(Cap)"{
 			if i == 0 {
 				words = append(words[:i], words[i+1:]...)
 			} else {
@@ -196,7 +216,7 @@ func ChangeA(s []string) []string {
 }
 
 func Punctuations(s []string) []string {
-	puncs := []string{",", ".", "!", "?", ":", ";"}
+	/*puncs := []string{",", ".", "!", "?", ":", ";"}
 	// punc in the middle of a string connecting to word after
 	for i, word := range s {
 		for _, punc := range puncs {
@@ -249,19 +269,22 @@ func Punctuations(s []string) []string {
 	*/
 	stuckedQuotes := regexp.MustCompile("('')")
 	// recently added
-	puncRegex := regexp.MustCompile(`\s+([.,!?:;])`)
-	puncGroupRegex := regexp.MustCompile(`([.,!?:;])\s+([.,!?:;])`)
+	// puncRegex := regexp.MustCompile(`\s+([.,!?:;])`)
+	// puncGroupRegex := regexp.MustCompile(`([.,!?:;])\s+([.,!?:;])`)
+	test := regexp.MustCompile(`\s*([.,!?:;])\s+`)
 	// quoteRegex := regexp.MustCompile(`'\s+(.*?)\s+'`)
+
 	singleQuoteRegex := regexp.MustCompile(`'(\s*)(.*?)(\s*)'`)
 	// hexRegex := regexp.MustCompile(`\b([0-9A-Fa-f]+)\s+\(hex\)`)
-	singleQuotetToTheLeftRegex := regexp.MustCompile(`(')(\s*)(.*?)`)
+	// singleQuotetToTheLeftRegex := regexp.MustCompile(`(')(\s+)(.*?)`)
 	addedSpace := stuckedQuotes.ReplaceAllString(strings.Join(s, " "), "$1 ")
+	addedSpace = test.ReplaceAllString(addedSpace, "$1")
 	// Replace punctuation
-	addedSpace = puncRegex.ReplaceAllString(addedSpace, "$1")
-	addedSpace = puncGroupRegex.ReplaceAllString(addedSpace, "$1$2")
+	// addedSpace = puncRegex.ReplaceAllString(addedSpace, "$1")
+	// addedSpace = puncGroupRegex.ReplaceAllString(addedSpace, "$1$2")
 	// addedSpace = quoteRegex.ReplaceAllString(addedSpace, "'$1'")
-	addedSpace = singleQuoteRegex.ReplaceAllString(addedSpace, "'$2'")
-	addedSpace = singleQuotetToTheLeftRegex.ReplaceAllString(addedSpace, "'$1'")
+	addedSpace = singleQuoteRegex.ReplaceAllString(addedSpace, " '$2' ")
+	// addedSpace = singleQuotetToTheLeftRegex.ReplaceAllString(addedSpace, "$1")
 
 	/*addedSpace = hexRegex.ReplaceAllStringFunc(addedSpace, func(s string) string {
 		hexNum := hexRegex.FindStringSubmatch(s)[1]

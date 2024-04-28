@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"os"
@@ -66,7 +67,7 @@ func main() {
 	givenText, _ := os.ReadFile(args[0])
 
 	for _, letter := range givenText {
-		if letter > 126 || letter < 32 {
+		if (letter > 126 || letter < 32) && letter != '\n' {
 			fmt.Println("Wrong input!")
 			return
 		}
@@ -75,122 +76,306 @@ func main() {
 	// arrayFormatting := strings.Fields(string(givenText))
 	// formattedString := strings.Join(arrayFormatting, " ")
 
-	// array to push the words into
-	words := strings.Split(string(givenText), " ")
-	for i := len(words) - 1; i >= 0; i-- {
-		word := words[i]
-		if word == "(up)" || word == "(UP)" || word == "(Up)" || containsSubstring(word, "(up)") || containsSubstring(word, "(Up)") || containsSubstring(word, "(UP)") {
-			if i == 0 {
-				words = append(words[:i], words[i+1:]...)
-			} else {
-				words[i-1] = strings.ToUpper(words[i-1])
-				words = append(words[:i], words[i+1:]...)
-			}
-		} else if word == "(low)" || word == "(LOW)" || word == "(Low)" || containsSubstring(word, "(low)") || containsSubstring(word, "(Low)") || containsSubstring(word, "(LOW)") {
-			if i == 0 {
-				words = append(words[:i], words[i+1:]...)
-			} else {
-				words[i-1] = strings.ToLower(words[i-1])
-				words = append(words[:i], words[i+1:]...)
-			}
-		} else if word == "(cap)" || word == "(CAP)" || word == "(Cap)" || containsSubstring(word, "(cap)") || containsSubstring(word, "(Cap)") || containsSubstring(word, "(CAP)") {
-			if i == 0 {
-				words = append(words[:i], words[i+1:]...)
-			} else {
-				if len(words[i-1]) > 0 {
-					tempString := ""
-					for j := 0; j < len(words[i-1]); j++ {
-						if (words[i-1][j] >= 'a' && words[i-1][j] <= 'z') || (words[i-1][j] >= 'A' && words[i-1][j] <= 'Z') {
-							words[i-1] = tempString + strings.ToUpper(string(words[i-1][j])) + strings.ToLower(string(words[i-1][j+1:]))
-							break
-						} else {
-							tempString += string(words[i-1][j])
-						}
+	// new method of opening and reading file
+	file, err := os.Open("sample.txt")
+	if err != nil {
+		fmt.Println("Error opening file:", err)
+		return
+	}
+	defer file.Close()
+
+	// Create a scanner to read the file line by line
+	scanner := bufio.NewScanner(file)
+	var words []string
+	// Iterate through each line
+	for scanner.Scan() {
+		line := scanner.Text()
+		// Split the line into words
+		words = strings.Split(line, " ")
+		// Print each word
+		for i, word := range words {
+
+			// fmt.Println(words)
+			// if word == "\n" {
+			// 	counter++
+			// 	fmt.Println(" count = ", counter)
+			// }
+			if word == "(up)" || word == "(UP)" || word == "(Up)" || containsSubstring(word, "(up)") || containsSubstring(word, "(Up)") || containsSubstring(word, "(UP)") {
+				if i == 0 {
+					words = append(words[:i], words[i+1:]...)
+				} else {
+					if word != "(up)" && containsSubstring(word, "(up)") {
+						result := strings.Replace(word, "(up)", "", -1)
+						words[i-1] += result
+					} else if word != "(Up)" && containsSubstring(word, "(Up)") {
+						result := strings.Replace(word, "(Up)", "", -1)
+						words[i-1] += result
+					} else if word != "(UP)" && containsSubstring(word, "(UP)") {
+						result := strings.Replace(word, "(UP)", "", -1)
+						words[i-1] += result
 					}
 
+					words[i-1] = strings.ToUpper(words[i-1])
+					words = append(words[:i], words[i+1:]...)
 				}
-				words = append(words[:i], words[i+1:]...)
-			}
-		} else if word == "(hex)" || word == "(HEX)" || word == "(Hex)" || containsSubstring(word, "(hex)") || containsSubstring(word, "(Hex)") || containsSubstring(word, "(HEX)") {
-			if i == 0 {
-				words = append(words[:i], words[i+1:]...)
-			} else {
-				words[i-1] = HextoInt(words[i-1])
-				words = append(words[:i], words[i+1:]...)
-			}
-		} else if word == "(bin)" || word == "(BIN)" || word == "(Bin)" || containsSubstring(word, "(bin)") || containsSubstring(word, "(Bin)") || containsSubstring(word, "(BIN)") {
-			if i == 0 {
-				words = append(words[:i], words[i+1:]...)
-			} else {
-				words[i-1] = BintoInt(words[i-1])
-				words = append(words[:i], words[i+1:]...)
-			}
-		} else if word == "(up," || word == "(UP," || word == "(Up," || containsSubstring(word, "(up,") || containsSubstring(word, "(Up,") || containsSubstring(word, "(UP,") {
-			if i == 0 {
-				fmt.Println("Wrong input")
-				// words = append(words[:i], words[i+2:]...)
-			} else {
-				b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
-				number, _ := strconv.Atoi(string(b))
-				for j := 1; j <= number; j++ {
-					if i-j >= 0 {
-						words[i-j] = strings.ToUpper(words[i-j])
-					}
+			} else if word == "(low)" || word == "(LOW)" || word == "(Low)" || containsSubstring(word, "(low)") || containsSubstring(word, "(Low)") || containsSubstring(word, "(LOW)") {
+				if i == 0 {
+					words = append(words[:i], words[i+1:]...)
+				} else {
+					words[i-1] = strings.ToLower(words[i-1])
+					words = append(words[:i], words[i+1:]...)
 				}
-				words = append(words[:i], words[i+2:]...)
-			}
-		} else if word == "(low," || word == "(LOW," || word == "(Low," || containsSubstring(word, "(low,") || containsSubstring(word, "(Low,") || containsSubstring(word, "(LOW,") {
-			if i == 0 {
-				fmt.Println("Wrong input")
-				// words = append(words[:i], words[i+2:]...)
-			} else {
-				b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
-				number, _ := strconv.Atoi(string(b))
-				for j := 1; j <= number; j++ {
-					if i-j >= 0 {
-						words[i-j] = strings.ToLower(words[i-j])
-					}
-				}
-				words = append(words[:i], words[i+2:]...)
-			}
-		} else if word == "(cap," || word == "(CAP," || word == "(Cap," || containsSubstring(word, "(cap,") || containsSubstring(word, "(Cap,") || containsSubstring(word, "(CAP,") {
-			if i == 0 {
-				fmt.Println("Wrong input")
-				// words = append(words[:i], words[i+2:]...)
-			} else {
-				b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
-				number, _ := strconv.Atoi(string(b))
-				for j := 1; j <= number; j++ {
-					if i-j >= 0 {
-						// expermintal code
+			} else if word == "(cap)" || word == "(CAP)" || word == "(Cap)" || containsSubstring(word, "(cap)") || containsSubstring(word, "(Cap)") || containsSubstring(word, "(CAP)") {
+				if i == 0 {
+					words = append(words[:i], words[i+1:]...)
+				} else {
+					if len(words[i-1]) > 0 {
 						tempString := ""
-						for k := 0; k < len(words[i-j]); k++ {
-							if (words[i-j][k] >= 'a' && words[i-1][k] <= 'z') || (words[i-1][k] >= 'A' && words[i-1][k] <= 'Z') {
-								words[i-j] = tempString + strings.ToUpper(string(words[i-j][k])) + strings.ToLower(string(words[i-j][k+1:]))
+						for j := 0; j < len(words[i-1]); j++ {
+							if (words[i-1][j] >= 'a' && words[i-1][j] <= 'z') || (words[i-1][j] >= 'A' && words[i-1][j] <= 'Z') {
+								words[i-1] = tempString + strings.ToUpper(string(words[i-1][j])) + strings.ToLower(string(words[i-1][j+1:]))
 								break
 							} else {
-								tempString += string(words[i-j][k])
+								tempString += string(words[i-1][j])
 							}
-							// end of expermintal code
-							words[i-j] = strings.ToUpper(string(words[i-j][0])) + strings.ToLower(string(words[i-j][1:]))
+						}
+
+					}
+					words = append(words[:i], words[i+1:]...)
+				}
+			} else if word == "(hex)" || word == "(HEX)" || word == "(Hex)" || containsSubstring(word, "(hex)") || containsSubstring(word, "(Hex)") || containsSubstring(word, "(HEX)") {
+				if i == 0 {
+					words = append(words[:i], words[i+1:]...)
+				} else {
+					words[i-1] = HextoInt(words[i-1])
+					words = append(words[:i], words[i+1:]...)
+				}
+			} else if word == "(bin)" || word == "(BIN)" || word == "(Bin)" || containsSubstring(word, "(bin)") || containsSubstring(word, "(Bin)") || containsSubstring(word, "(BIN)") {
+				if i == 0 {
+					words = append(words[:i], words[i+1:]...)
+				} else {
+					words[i-1] = BintoInt(words[i-1])
+					words = append(words[:i], words[i+1:]...)
+				}
+			} else if word == "(up," || word == "(UP," || word == "(Up," || containsSubstring(word, "(up,") || containsSubstring(word, "(Up,") || containsSubstring(word, "(UP,") {
+				if i == 0 {
+					fmt.Println("Wrong input")
+					// words = append(words[:i], words[i+2:]...)
+				} else {
+					b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
+					number, _ := strconv.Atoi(string(b))
+					for j := 1; j <= number; j++ {
+						if i-j >= 0 {
+							words[i-j] = strings.ToUpper(words[i-j])
 						}
 					}
+					words = append(words[:i], words[i+2:]...)
 				}
-				words = append(words[:i], words[i+2:]...)
+			} else if word == "(low," || word == "(LOW," || word == "(Low," || containsSubstring(word, "(low,") || containsSubstring(word, "(Low,") || containsSubstring(word, "(LOW,") {
+				if i == 0 {
+					fmt.Println("Wrong input")
+					// words = append(words[:i], words[i+2:]...)
+				} else {
+					b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
+					number, _ := strconv.Atoi(string(b))
+					for j := 1; j <= number; j++ {
+						if i-j >= 0 {
+							words[i-j] = strings.ToLower(words[i-j])
+						}
+					}
+					words = append(words[:i], words[i+2:]...)
+				}
+			} else if word == "(cap," || word == "(CAP," || word == "(Cap," || containsSubstring(word, "(cap,") || containsSubstring(word, "(Cap,") || containsSubstring(word, "(CAP,") {
+				if i == 0 {
+					fmt.Println("Wrong input")
+					// words = append(words[:i], words[i+2:]...)
+				} else {
+					b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
+					number, _ := strconv.Atoi(string(b))
+					for j := 1; j <= number; j++ {
+						if i-j >= 0 {
+							// expermintal code
+							tempString := ""
+							for k := 0; k < len(words[i-j]); k++ {
+								if (words[i-j][k] >= 'a' && words[i-1][k] <= 'z') || (words[i-1][k] >= 'A' && words[i-1][k] <= 'Z') {
+									words[i-j] = tempString + strings.ToUpper(string(words[i-j][k])) + strings.ToLower(string(words[i-j][k+1:]))
+									break
+								} else {
+									tempString += string(words[i-j][k])
+								}
+								// end of expermintal code
+								words[i-j] = strings.ToUpper(string(words[i-j][0])) + strings.ToLower(string(words[i-j][1:]))
+							}
+						}
+					}
+					words = append(words[:i], words[i+2:]...)
+				}
 			}
+			
+    }
+    
+
+			
+		}
+		ChangeA(words)
+			// join slice
+			needed := strings.Join(Punctuations(words), " ")
+
+			// write file, automatically updates manipulated file.
+			secondfile, err := os.OpenFile(args[1], os.O_APPEND|os.O_WRONLY, 0644)
+    if err != nil {
+        fmt.Println("Error opening file:", err)
+        os.Exit(1)
+		defer secondfile.Close()
+
+		// Write the content to the file
+		_, err = secondfile.Write([]byte(needed))
+		if err != nil {
+			fmt.Println("Error writing to file:", err)
+			os.Exit(1)
 		}
 	}
 
-	ChangeA(words)
+	// // Check for any errors during scanning
+	// if err := scanner.Err(); err != nil {
+	//     fmt.Println("Error scanning file:", err)
+	// }
+	// //End of new method of opening and reading file
 
-	// join slice
-	needed := strings.Join(Punctuations(words), " ")
+	// // array to push the words into
+	// //counter := 0
+	// //fmt.Println(string (givenText))
+	// //words := strings.Split(string(givenText), " ")
+	// for i := len(words) - 1; i >= 0; i-- {
+	// 	word := words[i]
+	// 	//fmt.Println(words)
+	// 	// if word == "\n" {
+	// 	// 	counter++
+	// 	// 	fmt.Println(" count = ", counter)
+	// 	// }
+	// 	if word == "(up)" || word == "(UP)" || word == "(Up)" || containsSubstring(word, "(up)") || containsSubstring(word, "(Up)") || containsSubstring(word, "(UP)") {
+	// 		if i == 0 {
+	// 			words = append(words[:i], words[i+1:]...)
+	// 		} else {
+	// 			if word != "(up)" && containsSubstring(word, "(up)") {
+	// 				result := strings.Replace(word, "(up)", "", -1)
+	// 				words[i-1] +=result
+	// 			} else if word != "(Up)" && containsSubstring(word, "(Up)") {
+	// 				result := strings.Replace(word, "(Up)", "", -1)
+	// 				words[i-1] +=result
+	// 			} else if word != "(UP)" && containsSubstring(word, "(UP)"){
+	// 				result := strings.Replace(word, "(UP)", "", -1)
+	// 				words[i-1] +=result
+	// 			}
 
-	// write file, automatically updates manipulated file.
-	man := os.WriteFile(args[1], []byte(needed), 0o644)
-	if man != nil {
-		os.Exit(1)
-	}
+	// 			words[i-1] = strings.ToUpper(words[i-1])
+	// 			words = append(words[:i], words[i+1:]...)
+	// 		}
+	// 	} else if word == "(low)" || word == "(LOW)" || word == "(Low)" || containsSubstring(word, "(low)") || containsSubstring(word, "(Low)") || containsSubstring(word, "(LOW)") {
+	// 		if i == 0 {
+	// 			words = append(words[:i], words[i+1:]...)
+	// 		} else {
+	// 			words[i-1] = strings.ToLower(words[i-1])
+	// 			words = append(words[:i], words[i+1:]...)
+	// 		}
+	// 	} else if word == "(cap)" || word == "(CAP)" || word == "(Cap)" || containsSubstring(word, "(cap)") || containsSubstring(word, "(Cap)") || containsSubstring(word, "(CAP)") {
+	// 		if i == 0 {
+	// 			words = append(words[:i], words[i+1:]...)
+	// 		} else {
+	// 			if len(words[i-1]) > 0 {
+	// 				tempString := ""
+	// 				for j := 0; j < len(words[i-1]); j++ {
+	// 					if (words[i-1][j] >= 'a' && words[i-1][j] <= 'z') || (words[i-1][j] >= 'A' && words[i-1][j] <= 'Z') {
+	// 						words[i-1] = tempString + strings.ToUpper(string(words[i-1][j])) + strings.ToLower(string(words[i-1][j+1:]))
+	// 						break
+	// 					} else {
+	// 						tempString += string(words[i-1][j])
+	// 					}
+	// 				}
+
+	// 			}
+	// 			words = append(words[:i], words[i+1:]...)
+	// 		}
+	// 	} else if word == "(hex)" || word == "(HEX)" || word == "(Hex)" || containsSubstring(word, "(hex)") || containsSubstring(word, "(Hex)") || containsSubstring(word, "(HEX)") {
+	// 		if i == 0 {
+	// 			words = append(words[:i], words[i+1:]...)
+	// 		} else {
+	// 			words[i-1] = HextoInt(words[i-1])
+	// 			words = append(words[:i], words[i+1:]...)
+	// 		}
+	// 	} else if word == "(bin)" || word == "(BIN)" || word == "(Bin)" || containsSubstring(word, "(bin)") || containsSubstring(word, "(Bin)") || containsSubstring(word, "(BIN)") {
+	// 		if i == 0 {
+	// 			words = append(words[:i], words[i+1:]...)
+	// 		} else {
+	// 			words[i-1] = BintoInt(words[i-1])
+	// 			words = append(words[:i], words[i+1:]...)
+	// 		}
+	// 	} else if word == "(up," || word == "(UP," || word == "(Up," || containsSubstring(word, "(up,") || containsSubstring(word, "(Up,") || containsSubstring(word, "(UP,") {
+	// 		if i == 0 {
+	// 			fmt.Println("Wrong input")
+	// 			// words = append(words[:i], words[i+2:]...)
+	// 		} else {
+	// 			b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
+	// 			number, _ := strconv.Atoi(string(b))
+	// 			for j := 1; j <= number; j++ {
+	// 				if i-j >= 0 {
+	// 					words[i-j] = strings.ToUpper(words[i-j])
+	// 				}
+	// 			}
+	// 			words = append(words[:i], words[i+2:]...)
+	// 		}
+	// 	} else if word == "(low," || word == "(LOW," || word == "(Low," || containsSubstring(word, "(low,") || containsSubstring(word, "(Low,") || containsSubstring(word, "(LOW,") {
+	// 		if i == 0 {
+	// 			fmt.Println("Wrong input")
+	// 			// words = append(words[:i], words[i+2:]...)
+	// 		} else {
+	// 			b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
+	// 			number, _ := strconv.Atoi(string(b))
+	// 			for j := 1; j <= number; j++ {
+	// 				if i-j >= 0 {
+	// 					words[i-j] = strings.ToLower(words[i-j])
+	// 				}
+	// 			}
+	// 			words = append(words[:i], words[i+2:]...)
+	// 		}
+	// 	} else if word == "(cap," || word == "(CAP," || word == "(Cap," || containsSubstring(word, "(cap,") || containsSubstring(word, "(Cap,") || containsSubstring(word, "(CAP,") {
+	// 		if i == 0 {
+	// 			fmt.Println("Wrong input")
+	// 			// words = append(words[:i], words[i+2:]...)
+	// 		} else {
+	// 			b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
+	// 			number, _ := strconv.Atoi(string(b))
+	// 			for j := 1; j <= number; j++ {
+	// 				if i-j >= 0 {
+	// 					// expermintal code
+	// 					tempString := ""
+	// 					for k := 0; k < len(words[i-j]); k++ {
+	// 						if (words[i-j][k] >= 'a' && words[i-1][k] <= 'z') || (words[i-1][k] >= 'A' && words[i-1][k] <= 'Z') {
+	// 							words[i-j] = tempString + strings.ToUpper(string(words[i-j][k])) + strings.ToLower(string(words[i-j][k+1:]))
+	// 							break
+	// 						} else {
+	// 							tempString += string(words[i-j][k])
+	// 						}
+	// 						// end of expermintal code
+	// 						words[i-j] = strings.ToUpper(string(words[i-j][0])) + strings.ToLower(string(words[i-j][1:]))
+	// 					}
+	// 				}
+	// 			}
+	// 			words = append(words[:i], words[i+2:]...)
+	// 		}
+	// 	}
+	// }
+
+	// ChangeA(words)
+
+	// // join slice
+	// needed := strings.Join(Punctuations(words), " ")
+
+	// // write file, automatically updates manipulated file.
+	// man := os.WriteFile(args[1], []byte(needed), 0o644)
+	// if man != nil {
+	// 	os.Exit(1)
+	// }
 }
 
 // conv hex to int

@@ -19,6 +19,7 @@ func containsSubstring(str, substr string) bool {
 	return false
 }
 
+
 func isFileEmpty(filename string) bool {
 	// Open the file
 	file, err := os.Open(filename)
@@ -48,6 +49,8 @@ func isFileEmpty(filename string) bool {
 }
 
 func main() {
+	counter := 0
+
 	if len(os.Args) != 3 {
 		fmt.Println("Wrong number of arguments!")
 		return
@@ -56,9 +59,10 @@ func main() {
 	if isFileEmpty(os.Args[1]) {
 		fmt.Println("The file is empty")
 		return
-	} else {
-		// fmt.Println("The file is not empty")
-	}
+	} 
+	// else {
+	// 	fmt.Println("The file is not empty")
+	// }
 
 	args := os.Args[1:]
 
@@ -86,15 +90,15 @@ func main() {
 
 	// Create a scanner to read the file line by line
 	scanner := bufio.NewScanner(file)
-	var words []string
+	// var words []string
 	// Iterate through each line
 	for scanner.Scan() {
 		line := scanner.Text()
 		// Split the line into words
-		words = strings.Split(line, " ")
+		// words := strings.Fields(line)
+		words := strings.Split(line, " ")
 		// Print each word
 		for i, word := range words {
-
 			// fmt.Println(words)
 			// if word == "\n" {
 			// 	counter++
@@ -122,6 +126,17 @@ func main() {
 				if i == 0 {
 					words = append(words[:i], words[i+1:]...)
 				} else {
+					if word != "(low)" && containsSubstring(word, "(low)") {
+						result := strings.Replace(word, "(low)", "", -1)
+						words[i-1] += result
+					} else if word != "(Low)" && containsSubstring(word, "(Low)") {
+						result := strings.Replace(word, "(Low)", "", -1)
+						words[i-1] += result
+					} else if word != "(LOW)" && containsSubstring(word, "(LOW)") {
+						result := strings.Replace(word, "(LOW)", "", -1)
+						words[i-1] += result
+					}
+
 					words[i-1] = strings.ToLower(words[i-1])
 					words = append(words[:i], words[i+1:]...)
 				}
@@ -129,6 +144,17 @@ func main() {
 				if i == 0 {
 					words = append(words[:i], words[i+1:]...)
 				} else {
+					if word != "(cap)" && containsSubstring(word, "(cap)") {
+						result := strings.Replace(word, "(cap)", "", -1)
+						words[i-1] += result
+					} else if word != "(Cap)" && containsSubstring(word, "(Cap)") {
+						result := strings.Replace(word, "(Cap)", "", -1)
+						words[i-1] += result
+					} else if word != "(CAP)" && containsSubstring(word, "(CAP)") {
+						result := strings.Replace(word, "(CAP)", "", -1)
+						words[i-1] += result
+					}
+
 					if len(words[i-1]) > 0 {
 						tempString := ""
 						for j := 0; j < len(words[i-1]); j++ {
@@ -211,29 +237,57 @@ func main() {
 					words = append(words[:i], words[i+2:]...)
 				}
 			}
-			
-    }
-    
-
-			
 		}
+
 		ChangeA(words)
-			// join slice
-			needed := strings.Join(Punctuations(words), " ")
+		// join slice
+		needed := strings.Join(Punctuations(words), " ")
 
-			// write file, automatically updates manipulated file.
-			secondfile, err := os.OpenFile(args[1], os.O_APPEND|os.O_WRONLY, 0644)
-    if err != nil {
-        fmt.Println("Error opening file:", err)
-        os.Exit(1)
-		defer secondfile.Close()
-
-		// Write the content to the file
+		// write file, automatically updates manipulated file.
+		if counter != 0 {
+			secondfile, err := os.OpenFile(args[1], os.O_APPEND|os.O_WRONLY, 0o644)
+			if err != nil {
+				fmt.Println("Error opening file:", err)
+				os.Exit(1)
+				defer secondfile.Close()
+			}
+			// Write the content to the file
 		_, err = secondfile.Write([]byte(needed))
 		if err != nil {
 			fmt.Println("Error writing to file:", err)
 			os.Exit(1)
 		}
+
+		_, err = secondfile.Write([]byte{'\n'})
+		if err != nil {
+			fmt.Println("Error writing to file:", err)
+			os.Exit(1)
+		}
+		
+		} else {
+			secondfile, err := os.OpenFile(args[1], os.O_WRONLY|os.O_TRUNC, 0o644)
+			if err != nil {
+				fmt.Println("Error opening file:", err)
+				os.Exit(1)
+				defer secondfile.Close()
+			}
+			// Write the content to the file
+		_, err = secondfile.Write([]byte(needed))
+		if err != nil {
+			fmt.Println("Error writing to file:", err)
+			os.Exit(1)
+		}
+
+		_, err = secondfile.Write([]byte{'\n'})
+		if err != nil {
+			fmt.Println("Error writing to file:", err)
+			os.Exit(1)
+		}
+		counter ++
+		}
+
+		
+
 	}
 
 	// // Check for any errors during scanning
@@ -461,14 +515,14 @@ func Punctuations(s []string) []string {
 	// recently added
 	// puncRegex := regexp.MustCompile(`\s+([.,!?:;])`)
 	// puncGroupRegex := regexp.MustCompile(`([.,!?:;])\s+([.,!?:;])`)
-	test := regexp.MustCompile(`\s*([.,!?:;])\s+`)
+	test := regexp.MustCompile(`\s*([.,!?:;]+)\s*`)
 	// quoteRegex := regexp.MustCompile(`'\s+(.*?)\s+'`)
 
 	singleQuoteRegex := regexp.MustCompile(`'(\s*)(.*?)(\s*)'`)
 	// hexRegex := regexp.MustCompile(`\b([0-9A-Fa-f]+)\s+\(hex\)`)
 	// singleQuotetToTheLeftRegex := regexp.MustCompile(`(')(\s+)(.*?)`)
 	addedSpace := stuckedQuotes.ReplaceAllString(strings.Join(s, " "), "$1 ")
-	addedSpace = test.ReplaceAllString(addedSpace, "$1")
+	addedSpace = test.ReplaceAllString(addedSpace, "$1 ")
 	// Replace punctuation
 	// addedSpace = puncRegex.ReplaceAllString(addedSpace, "$1")
 	// addedSpace = puncGroupRegex.ReplaceAllString(addedSpace, "$1$2")

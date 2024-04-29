@@ -1,3 +1,18 @@
+(((((hello (cap, 3))))))
+(((((hello (cap,1))))))
+hello (
+  cap
+)
+heelo (cap) (up)
+
+cap (cap) cap (cap) 
+
+cap (cap, 0) cap (cap, cap)
+
+cap (cap, 0) cap (cap, 0)
+
+
+
 1: FIXED. just a dot "." so there is no word before any dot. 
 2: Can not replicate this error. if there is a trailing vowel like "a" at the end of the sentence
 3: FIXED. just a "'"

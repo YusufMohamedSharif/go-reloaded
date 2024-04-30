@@ -187,7 +187,7 @@ func main() {
 				if i == 0 {
 					fmt.Println("Wrong input")
 					// words = append(words[:i], words[i+2:]...)
-				} else {
+				} else if i < len(words)-1 {
 					b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
 					number, _ := strconv.Atoi(string(b))
 					for j := 1; j <= number; j++ {
@@ -201,7 +201,7 @@ func main() {
 				if i == 0 {
 					fmt.Println("Wrong input")
 					// words = append(words[:i], words[i+2:]...)
-				} else {
+				} else if i < len(words)-1 {
 					b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
 					number, _ := strconv.Atoi(string(b))
 					for j := 1; j <= number; j++ {
@@ -215,7 +215,7 @@ func main() {
 				if i == 0 {
 					fmt.Println("Wrong input")
 					// words = append(words[:i], words[i+2:]...)
-				} else {
+				} else if i < len(words)-1 {
 					b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
 					number, _ := strconv.Atoi(string(b))
 					for j := 1; j <= number; j++ {

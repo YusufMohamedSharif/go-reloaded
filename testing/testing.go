@@ -129,7 +129,6 @@ func main() {
 					
 					
 				}
-				i--
 			} else if words[i]== "(low)" || words[i]== "(LOW)" || words[i]== "(Low)" || containsSubstring(words[i], "(low)") || containsSubstring(words[i], "(Low)") || containsSubstring(words[i], "(LOW)") {
 				if i == 0 {
 					words = append(words[:i], words[i+1:]...)
@@ -148,7 +147,6 @@ func main() {
 					words[i-1] = strings.ToLower(words[i-1])
 					words = append(words[:i], words[i+1:]...)
 				}
-				i--
 			} else if words[i]== "(cap)" || words[i]== "(CAP)" || words[i]== "(Cap)" || containsSubstring(words[i], "(cap)") || containsSubstring(words[i], "(Cap)") || containsSubstring(words[i], "(CAP)") {
 				if i == 0 {
 					words = append(words[:i], words[i+1:]...)
@@ -178,7 +176,6 @@ func main() {
 					}
 					words = append(words[:i], words[i+1:]...)
 				}
-				
 				i--
 			} else if words[i]== "(hex)" || words[i]== "(HEX)" || words[i]== "(Hex)" || containsSubstring(words[i], "(hex)") || containsSubstring(words[i], "(Hex)") || containsSubstring(words[i], "(HEX)") {
 				if i == 0 {
@@ -187,7 +184,6 @@ func main() {
 					words[i-1] = HextoInt(words[i-1])
 					words = append(words[:i], words[i+1:]...)
 				}
-				i--
 			} else if words[i]== "(bin)" || words[i]== "(BIN)" || words[i]== "(Bin)" || containsSubstring(words[i], "(bin)") || containsSubstring(words[i], "(Bin)") || containsSubstring(words[i], "(BIN)") {
 				if i == 0 {
 					words = append(words[:i], words[i+1:]...)
@@ -195,13 +191,11 @@ func main() {
 					words[i-1] = BintoInt(words[i-1])
 					words = append(words[:i], words[i+1:]...)
 				}
-				i--
 			} else if words[i]== "(up," || words[i]== "(UP," || words[i]== "(Up," || containsSubstring(words[i], "(up,") || containsSubstring(words[i], "(Up,") || containsSubstring(words[i], "(UP,") {
 				if i == 0 {
 					fmt.Println("Wrong input")
 					// words = append(words[:i], words[i+2:]...)
 				} else if i < len(words)-1 {
-					closingParanIndex := 0
 					b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
 					number, _ := strconv.Atoi(string(b))
 					for j := 1; j <= number; j++ {
@@ -209,24 +203,13 @@ func main() {
 							words[i-j] = strings.ToUpper(words[i-j])
 						}
 					}
-					for j := 0; j < len(words[i+1]); j++{
-						if 	words[i+1][j] == ')'{
-							closingParanIndex = j+1
-							words[i+1] = words[i+1][closingParanIndex:]
-							words[i-1] += words[i+1]
-							break
-						}
-						
-					}
 					words = append(words[:i], words[i+2:]...)
 				}
-				i--
 			} else if words[i]== "(low," || words[i]== "(LOW," || words[i]== "(Low," || containsSubstring(words[i], "(low,") || containsSubstring(words[i], "(Low,") || containsSubstring(words[i], "(LOW,") {
 				if i == 0 {
 					fmt.Println("Wrong input")
 					// words = append(words[:i], words[i+2:]...)
 				} else if i < len(words)-1 {
-					closingParanIndex := 0
 					b := strings.Trim(string(words[i+1]), words[i+1][len(words[i+1])-1:])
 					number, _ := strconv.Atoi(string(b))
 					for j := 1; j <= number; j++ {
@@ -234,18 +217,8 @@ func main() {
 							words[i-j] = strings.ToLower(words[i-j])
 						}
 					}
-					for j := 0; j < len(words[i+1]); j++{
-						if 	words[i+1][j] == ')'{
-							closingParanIndex = j+1
-							words[i+1] = words[i+1][closingParanIndex:]
-							words[i-1] += words[i+1]
-							break
-						}
-						
-					}
 					words = append(words[:i], words[i+2:]...)
 				}
-				i--
 			} else if words[i]== "(cap," || words[i]== "(CAP," || words[i]== "(Cap," || containsSubstring(words[i], "(cap,") || containsSubstring(words[i], "(Cap,") || containsSubstring(words[i], "(CAP,") {
 				if i == 0 {
 					fmt.Println("Wrong input")
@@ -275,13 +248,13 @@ func main() {
 							closingParanIndex = j+1
 							words[i+1] = words[i+1][closingParanIndex:]
 							words[i-1] += words[i+1]
+							fmt.Println(words[i])
 							break
 						}
 						
 					}  
 					words = append(words[:i], words[i+2:]...)
 				}
-				i--
 			}
 		}
 
